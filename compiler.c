@@ -16,6 +16,15 @@ MetaCommandResult doMetaCommand(InputBuffer* inputBuffer){
 PrepareResult prepareStatement(InputBuffer* inputBuffer, Statement* statement){
 	if (strncmp(inputBuffer->buffer, "insert", 6) == 0){
 		statement->type = STATEMENT_INSERT;
+		int argsAssigned = sscanf(
+			inputBuffer->buffer,
+			"insert %d %s %s",
+			&(statement->rowToInsert.id),
+			statement->rowToInsert.username,
+			statement->rowToInsert.email);
+		if(argsAssigned < 3){
+			return PREPARE_SYNTAX_ERROR;
+		}
 		return PREPARE_SUCCESS;
 	}
 	if (strcmp(inputBuffer->buffer, "select") == 0){

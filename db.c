@@ -5,6 +5,8 @@
 #include "inputbuffer.h"
 #include "compiler.h"
 
+//https://cstack.github.io/db_tutorial/
+//this is the website I am using as a guide
 
 
 int main(int argc, char* argv[]){
