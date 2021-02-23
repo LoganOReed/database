@@ -7,10 +7,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "inputbuffer.h"
-
-//defining constant sizes
-#define COLUMN_USERNAME_SIZE 32
-#define COLUMN_EMAIL_SIZE 255
+#include "table.h"
 
 typedef enum {
 	META_COMMAND_SUCCESS,
@@ -24,23 +21,24 @@ typedef enum {
 } PrepareResult;
 
 typedef enum {
+	EXECUTE_SUCCESS,
+	EXECUTE_TABLE_FULL
+} ExecuteResult;
+
+typedef enum {
 	STATEMENT_INSERT,
 	STATEMENT_SELECT
 } StatementType;
-
-typedef struct{
-	uint32_t id;
-	char username[COLUMN_USERNAME_SIZE];
-	char email[COLUMN_EMAIL_SIZE];
-} Row;
 
 typedef struct {
 	StatementType type;
 	Row rowToInsert;	//only used by insert statement
 } Statement;
 
-MetaCommandResult doMetaCommand(InputBuffer*);
+MetaCommandResult doMetaCommand(InputBuffer*, Table*);
 PrepareResult prepareStatement(InputBuffer*, Statement*);
-void executeStatement(Statement*);
+ExecuteResult executeInsert(Statement*, Table*);
+ExecuteResult executeSelect(Statement*, Table*);
+ExecuteResult executeStatement(Statement*, Table*);
 
 #endif

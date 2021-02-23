@@ -14,13 +14,14 @@
 
 
 int main(int argc, char* argv[]){
+	Table* table = newTable();
 	InputBuffer* inputBuffer = newInputBuffer();
 	while(true){
 		printPrompt();
 		readInput(inputBuffer);
 
 		if(inputBuffer->buffer[0] == '.'){
-			switch(doMetaCommand(inputBuffer)){
+			switch(doMetaCommand(inputBuffer, table)){
 				case (META_COMMAND_SUCCESS):
 					continue;
 				case (META_COMMAND_UNRECOGNIZED_COMMAND):
@@ -33,13 +34,21 @@ int main(int argc, char* argv[]){
 		switch (prepareStatement(inputBuffer, &statement)){
 			case (PREPARE_SUCCESS):
 				break;
+			case (PREPARE_SYNTAX_ERROR):
+				printf("Syntax error. Could not parse statement.\n");
+				continue;
 			case (PREPARE_UNRECOGNIZED_STATEMENT):
 				printf("Unrecognized keyword at start of '%s'.\n", 
 					inputBuffer->buffer);
 				continue;
 		}
-		executeStatement(&statement);
-		printf("Executed.\n");
-
+		switch (executeStatement(&statement, table)){
+			case (EXECUTE_SUCCESS):
+				printf("Executed.\n");
+				break;
+			case (EXECUTE_TABLE_FULL):
+				printf("Error: Table Full.\n");
+				break;
+		}
 	}
 }
