@@ -1,14 +1,16 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-#define COLUMN_USERNAME_SIZE 32
-#define COLUMN_EMAIL_SIZE 255
-
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include "inputbuffer.h"
+
+//defining constant sizes
+#define COLUMN_USERNAME_SIZE 32
+#define COLUMN_EMAIL_SIZE 255
 
 typedef enum {
 	META_COMMAND_SUCCESS,
@@ -17,7 +19,8 @@ typedef enum {
 
 typedef enum {
 	PREPARE_SUCCESS,
-	PREPARE_UNRECOGNIZED_STATEMENT
+	PREPARE_UNRECOGNIZED_STATEMENT,
+	PREPARE_SYNTAX_ERROR
 } PrepareResult;
 
 typedef enum {

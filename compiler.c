@@ -1,6 +1,11 @@
+/*
+*	Compiles user input from cmd line into readable statements for the program
+*/
+
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include "inputbuffer.h"
 #include "compiler.h"
@@ -45,3 +50,5 @@ void executeStatement(Statement* statement){
 			break;
 	}
 }
+
+
