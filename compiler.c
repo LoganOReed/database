@@ -26,7 +26,7 @@ PrepareResult prepareInsert(InputBuffer* inputBuffer, Statement* statement){
 	statement->type = STATEMENT_INSERT;
 
 	//This reads input into mem without having to worry about sscanf
-	char* keyword = strtok(input_buffer->buffer, " ");
+	char* keyword = strtok(inputBuffer->buffer, " ");
 	//NULL after first call because that tells the function to continue at last delimiter
 	char* idString = strtok(NULL, " ");
 	char* username = strtok(NULL, " ");
@@ -56,7 +56,7 @@ PrepareResult prepareInsert(InputBuffer* inputBuffer, Statement* statement){
 	strcpy(statement->rowToInsert.username, username);	//I have no idea why we don't just use assignment
 	strcpy(statement->rowToInsert.email, email);
 
-	return PREPARE_SUCCESS
+	return PREPARE_SUCCESS;
 }
 
 PrepareResult prepareStatement(InputBuffer* inputBuffer, Statement* statement){
