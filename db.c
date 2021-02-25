@@ -9,14 +9,23 @@
 #include "inputbuffer.h"
 #include "compiler.h"
 
-//TODO:
-//-Replace scanf in parser with strtok so we can manage length
-//-Add PREPARE_STRING_TOO_LONG to account for error
-//-percist onto disk, etc.
+/*
+	TODO:
+		-refractor the table file into table and pager
+		-add cursor object that represents a location in the table
+		-Replace table and pager with B-Tree
+*/
 
 
 int main(int argc, char* argv[]){
-	Table* table = newTable();
+	if(argc < 2){
+		printf("Must supply a database filename.\n");
+		exit(EXIT_FAILURE);
+	}
+
+	char* filename = argv[1];
+	Table* table = dbOpen(filename);
+
 	InputBuffer* inputBuffer = newInputBuffer();
 	while(true){
 		printPrompt();

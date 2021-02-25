@@ -1,10 +1,21 @@
 #ifndef TABLE_H
 #define TABLE_H
 
+
+/*
+	TODO:
+		-Refractor code into table and pager files
+*/
+
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>		//primitive IO library
 
 //fixed size of a page
 #define TABLE_MAX_PAGES 100
@@ -36,20 +47,33 @@ const uint32_t PAGE_SIZE;	//convention for size of pages of operating systems
 const uint32_t ROWS_PER_PAGE;
 const uint32_t TABLE_MAX_ROWS;
 
+//abstraction that makes it easier for table and os to interface
+typedef struct{
+	int fileDescriptor;
+	uint32_t fileLength;
+	void* pages[TABLE_MAX_PAGES];
+} Pager;
+
 typedef struct{
 	uint32_t numRows;
-	void* pages[TABLE_MAX_PAGES];	//array of pointers to pages
+	Pager* pager;
 } Table;
 
 
-Table* newTable();			//constructor
-void freeTable(Table*);		//destructor
+Table* dbOpen(const char* filename);	//opens connection to database
+void dbClose(Table* table);				//closes connection to database
+
+Pager* pagerOpen(const char* filename);	//opens db file and init page cache to NULL's
+void pagerFlush(Pager* pager, uint32_t pageNum, uint32_t size);
 
 void serializeRow(Row* source, void* destination);
 void deserializeRow(void* source, Row* destination);
 
 //where to read/write memory for a particular row
 void* rowSlot(Table* table, uint32_t rowNum);
+
+//helper function for rowSlot
+void* getPage(Pager* pager, uint32_t pageNum);
 
 //prints the row
 void printRow(Row*);

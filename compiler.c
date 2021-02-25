@@ -13,8 +13,7 @@
 
 MetaCommandResult doMetaCommand(InputBuffer* inputBuffer, Table* table){
 	if(strcmp(inputBuffer->buffer, ".exit") == 0){
-		closeInputBuffer(inputBuffer);
-		freeTable(table);
+		dbClose(table);
 		exit(EXIT_SUCCESS);
 	} else {
 		return META_COMMAND_UNRECOGNIZED_COMMAND;
