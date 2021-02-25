@@ -21,19 +21,47 @@ MetaCommandResult doMetaCommand(InputBuffer* inputBuffer, Table* table){
 	}
 }
 
+//reads input using strtok instead of sscanf to fix mem bugs
+PrepareResult prepareInsert(InputBuffer* inputBuffer, Statement* statement){
+	statement->type = STATEMENT_INSERT;
+
+	//This reads input into mem without having to worry about sscanf
+	char* keyword = strtok(input_buffer->buffer, " ");
+	//NULL after first call because that tells the function to continue at last delimiter
+	char* idString = strtok(NULL, " ");
+	char* username = strtok(NULL, " ");
+	char* email = strtok(NULL, " ");
+
+	if(idString == NULL || username == NULL || email == NULL){
+		return PREPARE_SYNTAX_ERROR;
+	}
+
+	int id = atoi(idString);
+
+	//check id
+	if(id < 0){
+		return PREPARE_NEGATIVE_ID;
+	}
+
+	//check bounds
+	if(strlen(username) > COLUMN_USERNAME_SIZE){
+		return PREPARE_STRING_TOO_LONG;
+	}
+	if(strlen(email) > COLUMN_EMAIL_SIZE){
+		return PREPARE_STRING_TOO_LONG;
+	}
+
+	//store temp var into rowToInsert
+	statement->rowToInsert.id = id;
+	strcpy(statement->rowToInsert.username, username);	//I have no idea why we don't just use assignment
+	strcpy(statement->rowToInsert.email, email);
+
+	return PREPARE_SUCCESS
+}
+
 PrepareResult prepareStatement(InputBuffer* inputBuffer, Statement* statement){
 	if (strncmp(inputBuffer->buffer, "insert", 6) == 0){
-		statement->type = STATEMENT_INSERT;
-		int argsAssigned = sscanf(
-			inputBuffer->buffer,
-			"insert %d %s %s",
-			&(statement->rowToInsert.id),
-			statement->rowToInsert.username,
-			statement->rowToInsert.email);
-		if(argsAssigned < 3){
-			return PREPARE_SYNTAX_ERROR;
-		}
-		return PREPARE_SUCCESS;
+		return prepareInsert(inputBuffer, statement);
 	}
 	if (strcmp(inputBuffer->buffer, "select") == 0){
 		statement->type = STATEMENT_SELECT;

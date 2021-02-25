@@ -9,8 +9,10 @@
 #include "inputbuffer.h"
 #include "compiler.h"
 
-//https://cstack.github.io/db_tutorial/
-//this is the website I am using as a guide
+//TODO:
+//-Replace scanf in parser with strtok so we can manage length
+//-Add PREPARE_STRING_TOO_LONG to account for error
+//-percist onto disk, etc.
 
 
 int main(int argc, char* argv[]){
@@ -34,6 +36,12 @@ int main(int argc, char* argv[]){
 		switch (prepareStatement(inputBuffer, &statement)){
 			case (PREPARE_SUCCESS):
 				break;
+			case (PREPARE_STRING_TOO_LONG):
+				printf("String is too long.\n");
+				continue;
+			case (PREPARE_NEGATIVE_ID):
+				printf("ID must be positive.\n");
+				continue;
 			case (PREPARE_SYNTAX_ERROR):
 				printf("Syntax error. Could not parse statement.\n");
 				continue;

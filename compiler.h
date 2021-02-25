@@ -16,6 +16,8 @@ typedef enum {
 
 typedef enum {
 	PREPARE_SUCCESS,
+	PREPARE_NEGATIVE_ID,
+	PREPARE_STRING_TOO_LONG,
 	PREPARE_UNRECOGNIZED_STATEMENT,
 	PREPARE_SYNTAX_ERROR
 } PrepareResult;
@@ -36,6 +38,7 @@ typedef struct {
 } Statement;
 
 MetaCommandResult doMetaCommand(InputBuffer*, Table*);
+PrepareResult prepareInsert(InputBuffer*, Statement*);
 PrepareResult prepareStatement(InputBuffer*, Statement*);
 ExecuteResult executeInsert(Statement*, Table*);
 ExecuteResult executeSelect(Statement*, Table*);
